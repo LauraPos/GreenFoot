@@ -91,12 +91,16 @@ public class MyDodo extends Dodo
     }
     }
     
-    public boolean locationReached(int x, int y) {
-    return getX() == x && getY() == y;
-}
+    public boolean validCoordinates(int x, int y) {
+    return x >= 0 && x < getWorld().getWidth() && y >= 0 && y < getWorld().getHeight();
+    }
 
-    public void goToLocation(int coordX(5), int coordY(7 {
-    while (!locationReached(coordX, coordY)) {
+    public void goToLocation(int coordX, int coordY) {
+    if (!validCoordinates(coordX, coordY)) {
+        showError("Invalid coordinates");
+        return;
+    }
+    while (getX() != coordX || getY() != coordY) {
         if (getX() < coordX) {
             setDirection(EAST);
             move();
@@ -113,8 +117,22 @@ public class MyDodo extends Dodo
     }
     }
     
+    public int countEggsInRow() {
+    int count = 0;
+    if (onEgg()) {
+        count++;
+    }
+    while (canMove()) {
+        move();
+        if (onEgg()) {
+            count++;
+        }
+    }
+    goBackToStartOfRowAndFaceBack();
+    showCompliment("Er liggen " + count + " eieren in deze rij!");
+    return count;
+    }
     
-
     public void solveMaze() {
     while (!onNest()) {
         turnRight();
