@@ -94,6 +94,25 @@ public class MyDodo extends Dodo
     public boolean validCoordinates(int x, int y) {
     return x >= 0 && x < getWorld().getWidth() && y >= 0 && y < getWorld().getHeight();
     }
+    
+    public void layTrailOfEggs(int amount) {
+    if (amount <= 0) {
+        showError("Aantal moet groter zijn dan 0!");
+        return;
+    }
+    if (amount > getWorld().getWidth()) {
+        showError("Aantal is te groot voor de wereld!");
+        return;
+    }
+    
+    layEgg();
+    int count = 1;
+    while (count < amount) {
+        move();
+        layEgg();
+        count++;
+    }
+    }
 
     public void goToLocation(int coordX, int coordY) {
     if (!validCoordinates(coordX, coordY)) {
@@ -128,9 +147,25 @@ public class MyDodo extends Dodo
             count++;
         }
     }
-    goBackToStartOfRowAndFaceBack();
-    showCompliment("Er liggen " + count + " eieren in deze rij!");
     return count;
+    }
+
+    public int countAllEggs() {
+    int totalCount = 0;
+    int row = 0;
+    
+    while (row < getWorld().getHeight()) {
+        goToLocation(0, row);
+        faceEast();
+        int eggsInRow = countEggsInRow();
+        totalCount += eggsInRow;
+        System.out.println("Rij " + row + ": " + eggsInRow + " eieren");
+        row++;
+    }
+    
+    goToLocation(0, 0);
+    showCompliment("Totaal: " + totalCount + " eieren!");
+    return totalCount;
     }
     
     public void solveMaze() {
